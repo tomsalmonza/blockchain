@@ -8,15 +8,17 @@ from cryptography.hazmat.primitives import serialization
 
 
 def generate_keys():
+    '''Generate a random Public/Private RSA Key Pair'''
     private = rsa.generate_private_key(
-        public_exponent=65537,
-        key_size=2048,
-        backend=default_backend(),
-    )
+              public_exponent=65537,
+              key_size=2048,
+              backend=default_backend(),
+              )
     public = private.public_key()
     return private, public
 
 def sign(message, private):
+    '''Create a signature for a message using private key'''
     sig = private.sign(
         message,
         padding.PSS(
@@ -28,6 +30,7 @@ def sign(message, private):
     return sig
 
 def verify(message, sig, public):
+    '''Verify that a private key holder signed the message using the public key'''
     try:
         public.verify(
             sig,
@@ -45,26 +48,30 @@ def verify(message, sig, public):
         print("error executing verification")
         return False
 
-def printprivatekey(private):
-    pr_key = private.private_bytes(
+def serializeprivatekey(pr):
+    pr_key_ser = pr.private_bytes(
              encoding=serialization.Encoding.PEM,
              format=serialization.PrivateFormat.PKCS8,
              encryption_algorithm=serialization.NoEncryption()
     )
-    return pr_key
+    return str(pr_key_ser,"utf-8")
 
-def 
+def serializepublickey(pu):
+    pu_key_ser = pu.public_bytes(
+                 encoding=serialization.Encoding.PEM,
+                 format=serialization.PublicFormat.SubjectPublicKeyInfo
+                 )
+    return str(pu_key_ser,"utf-8")
 
 if __name__ == '__main__':
     pr,pu = generate_keys()
-    print(f"Private key is {pr}")
-    print(printprivatekey(pr))
-    print(f"Public key is {pu}")
+    print(serializeprivatekey(pr))
+    print(serializepublickey(pu))
     message = b"This is a secret message"
     sig = sign(message, pr)
     print(f"This is the signature: {sig}")
+    print("\n")
     correct = verify(message, sig, pu)
-
     if correct:
         print("Success! Good Signature")
     else:
