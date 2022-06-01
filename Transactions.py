@@ -22,7 +22,7 @@ class Tx:
     def sign(self, private):
         message = self.__gather()
         newsig = Signatures.sign(message, private)
-        self.sigs.append(newsig)        
+        self.sigs.append(newsig)
     def is_valid(self):
         total_in = 0
         total_out = 0
@@ -53,7 +53,7 @@ class Tx:
         if total_out > total_in:
             print("Outputs exceed inputs")
             return False
-        
+
         return True
     def __gather(self):
         data=[]
@@ -72,10 +72,6 @@ if __name__ == "__main__":
     Tx1.add_input(pu1, 1)
     Tx1.add_output(pu2, 1)
     Tx1.sign(pr1)
-    if Tx1.is_valid():
-        print("Success! Tx is valid")
-    else:
-        print("ERROR! Tx is invalid")
 
     Tx2 = Tx()
     Tx2.add_input(pu1, 2)
@@ -90,11 +86,14 @@ if __name__ == "__main__":
     Tx3.sign(pr3)
     Tx3.sign(pr4)
 
+    n=1
     for t in [Tx1, Tx2, Tx3]:
+        print(f"Tx{str(n)}")
         if t.is_valid():
             print("Success! Tx is valid")
         else:
             print("ERROR! Tx is invalid")
+        n +=1
 
     # Wrong signatures
     Tx4 = Tx()
@@ -137,19 +136,12 @@ if __name__ == "__main__":
     # outputs = [(pu2,1)]
     # change to [(pu3,1)]
     Tx9.outputs[0] = (pu3,1)
-    
+
 
     for t in [Tx4, Tx5, Tx6, Tx7, Tx8, Tx9]:
+        print(f"Tx{str(n)}")
         if t.is_valid():
             print("ERROR! Bad Tx is valid")
         else:
             print("Success! Bad Tx is invalid")
-    
-        
-
-
-
-
-    
-    
-        
+        n+=1
